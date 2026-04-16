@@ -1,7 +1,7 @@
 // Replace with your Supabase project URL and anon key
 const supabaseClient = supabase.createClient(
-  "https://YOUR_PROJECT_ID.supabase.co",
-  "YOUR_PUBLIC_ANON_KEY"
+  "https://fznvokjfavvegqhrcyov.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6bnZva2pmYXZ2ZWdxaHJjeW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjMxODcsImV4cCI6MjA5MTkzOTE4N30.yF4NlP1rbv8OlHOOhDDKk7W4QEG4CDhaWIjA8cQGZmg"
 );
 
 const ordersBody = document.getElementById("ordersBody");
