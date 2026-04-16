@@ -1,79 +1,106 @@
 /* ============================
-   DARK LIQUID GLASS THEME
+   GLOBAL DARK LIQUID GLASS THEME
    ============================ */
 
 :root {
-  --glass-bg: rgba(30, 30, 35, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-bg-strong: rgba(255, 255, 255, 0.12);
   --text: #f5f5f7;
   --text-soft: #c7c7d1;
   --primary: #ffffff;
-  --accent-soft: rgba(255, 255, 255, 0.06);
-  --blur: 22px;
+  --blur: 28px;
 }
 
 body {
   margin: 0;
-  font-family: system-ui;
-  background: radial-gradient(circle at top, #0f0f12, #1a1a1f 60%, #0d0d10);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  background: radial-gradient(circle at top, #0d0d10, #141418 60%, #0a0a0c);
   color: var(--text);
   display: flex;
   justify-content: center;
+  min-height: 100vh;
 }
 
 .app-shell {
   width: 100%;
   max-width: 1120px;
-  padding: 24px;
+  padding: 32px;
 }
 
-/* Glass container */
+/* ============================
+   GLASS UTILITY
+   ============================ */
+
 .glass {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 28px;
-  backdrop-filter: blur(var(--blur));
-  -webkit-backdrop-filter: blur(var(--blur));
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(var(--blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* Header */
+/* ============================
+   HEADER
+   ============================ */
+
 .header {
   display: flex;
   justify-content: space-between;
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  align-items: center;
 }
 
 .brand-text {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
-/* Hero */
+/* ============================
+   HERO
+   ============================ */
+
 .hero {
-  padding: 24px;
-  margin-bottom: 20px;
+  padding: 32px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
 }
 
 .hero p {
+  margin: 0;
   color: var(--text-soft);
 }
 
-/* Product grid */
+/* ============================
+   PRODUCT GRID
+   ============================ */
+
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
 }
 
 .card {
-  padding: 20px;
-  border-radius: 22px;
-  background: rgba(40, 40, 45, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .card p {
@@ -81,7 +108,7 @@ body {
 }
 
 /* ============================
-   UNIVERSAL BUTTON FIX
+   BUTTONS (GLOBAL)
    ============================ */
 
 button,
@@ -93,16 +120,16 @@ button,
 
   border: none;
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 10px 18px;
 
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
 
   font-size: 0.9rem;
   cursor: pointer;
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
   transition: 0.2s ease;
 }
@@ -125,18 +152,22 @@ button:hover,
   background: #fff;
 }
 
-/* Bubble popup */
+/* ============================
+   BUBBLE POPUP
+   ============================ */
+
 .bubble-popup {
   position: fixed;
   bottom: 24px;
   right: 24px;
   padding: 12px 18px;
-  background: rgba(40, 40, 45, 0.85);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   color: #fff;
   opacity: 0;
   transform: translateY(12px) scale(0.96);
-  transition: 0.2s;
+  transition: 0.2s ease;
+  backdrop-filter: blur(18px);
 }
 
 .bubble-popup.show {
@@ -152,23 +183,26 @@ button:hover,
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 380px;
+  width: 420px;
   max-width: 90vw;
   max-height: 80vh;
+
   transform: translate(-50%, -50%) scale(0.92);
   opacity: 0;
 
-  background: rgba(25, 25, 30, 0.45);
+  background: rgba(255, 255, 255, 0.10);
   border-radius: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
 
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.65),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 28px;
 
   z-index: 1000;
   transition: opacity 0.25s ease, transform 0.25s ease;
@@ -179,7 +213,25 @@ button:hover,
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Backdrop */
+/* Cart content */
+.cart-items {
+  overflow-y: auto;
+  max-height: 45vh;
+  padding-right: 6px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e5e5e7;
+}
+
+/* ============================
+   BACKDROP
+   ============================ */
+
 .backdrop {
   position: fixed;
   inset: 0;
