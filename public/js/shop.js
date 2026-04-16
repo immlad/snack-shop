@@ -1,5 +1,5 @@
 // Replace with your real Stripe publishable key
-const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
+const stripe = Stripe("pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q");
 
 const cart = {};
 const cartButton = document.getElementById("cartButton");
