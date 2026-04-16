@@ -246,3 +246,21 @@ button:hover,
   opacity: 1;
   pointer-events: auto;
 }
+
+/* FIX: Prevent cart drawer from blocking page when closed */
+.cart-drawer {
+  pointer-events: none;
+}
+
+.cart-drawer.open {
+  pointer-events: auto;
+}
+
+/* FIX: Backdrop only clickable when visible */
+.backdrop {
+  pointer-events: none;
+}
+
+.backdrop.show {
+  pointer-events: auto;
+}

@@ -17,6 +17,7 @@ const bubbleText = document.getElementById("bubbleText");
 
 let bubbleTimeout = null;
 
+// Bubble popup
 function showBubble(msg) {
   bubbleText.textContent = msg;
   bubblePopup.classList.add("show");
@@ -26,6 +27,7 @@ function showBubble(msg) {
   }, 1500);
 }
 
+// Cart open/close
 function openCart() {
   cartDrawer.classList.add("open");
   backdrop.classList.add("show");
@@ -135,3 +137,6 @@ checkoutButton.addEventListener("click", async () => {
     stripe.redirectToCheckout({ sessionId: data.id });
   }
 });
+
+// Cart button opens drawer
+cartButton.addEventListener("click", openCart);
