@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SnackCloud Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <div class="admin-shell glass">
+    <header class="admin-header glass">
+      <h1>SnackCloud Admin</h1>
+    </header>
+
+    <section class="glass panel">
+      <h2>Orders</h2>
+      <table id="ordersTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </section>
+
+    <section class="glass panel">
+      <h2>Analytics</h2>
+      <canvas id="ordersChart"></canvas>
+    </section>
+  </div>
+
+  <div class="bubble" id="bubble"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

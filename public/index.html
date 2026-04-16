@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SnackCloud Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles/shop.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="glass header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-text">SnackCloud</span>
+      </div>
+      <button class="cart-button" id="cartButton">
+        🛒 <span id="cartCount">0</span>
+      </button>
+    </header>
+
+    <main class="content">
+      <section class="glass hero">
+        <div>
+          <h1>Floaty, Fresh Snacks</h1>
+          <p>Light, crispy, and ready to pop into your cart.</p>
+        </div>
+      </section>
+
+      <section class="grid" id="productGrid">
+        <article class="glass card" data-id="chips" data-name="Cloud Chips" data-price="3.5">
+          <h2>Cloud Chips</h2>
+          <p>Feather-light potato crisps with sea salt.</p>
+          <div class="card-footer">
+            <span class="price">$3.50</span>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
+
+        <article class="glass card" data-id="gummies" data-name="Sky Gummies" data-price="4.25">
+          <h2>Sky Gummies</h2>
+          <p>Soft fruit gummies that melt in your mouth.</p>
+          <div class="card-footer">
+            <span class="price">$4.25</span>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
+
+        <article class="glass card" data-id="cookies" data-name="Nimbus Cookies" data-price="5.0">
+          <h2>Nimbus Cookies</h2>
+          <p>Chewy vanilla cookies with white chocolate.</p>
+          <div class="card-footer">
+            <span class="price">$5.00</span>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Bubble popup -->
+  <div class="bubble-popup" id="bubblePopup">
+    <span id="bubbleText">Added to cart</span>
+  </div>
+
+  <!-- Cart drawer -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="icon-button" id="closeCart">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <button class="primary full-width" id="checkoutButton">Checkout with Stripe</button>
+    </div>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <script src="js/shop.js"></script>
+</body>
+</html>

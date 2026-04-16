@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  background: radial-gradient(circle at top, #ffffff, #e5ebf7);
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  color: #111827;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+.admin-shell {
+  width: 100%;
+  max-width: 1100px;
+  padding: 24px;
+}
+
+.admin-header {
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.panel {
+  padding: 20px;
+  margin-top: 20px;
+}
+
+h1, h2 {
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+}
+
+button {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 4px;
+}
+
+button:nth-child(1) { background: #bfdbfe; }
+button:nth-child(2) { background: #bbf7d0; }
+button:nth-child(3) { background: #fde68a; }
+button:nth-child(4) { background: #fecaca; }
+button:nth-child(5) { background: #e5e7eb; }
+
+/* Bubble */
+.bubble {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  transition: 0.2s;
+}
+
+.bubble.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
