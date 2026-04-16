@@ -1,19 +1,19 @@
-import Stripe from "stripe";
+const Stripe = require("stripe");
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
     const items = req.body.items || [];
 
     const PRICE_MAP = {
-      chips: "price_123",
-      gummies: "price_456",
-      cookies: "price_789",
+      chips: "price_xxxxxxxxxxxxx",
+      gummies: "price_xxxxxxxxxxxxx",
+      cookies: "price_xxxxxxxxxxxxx",
     };
 
     const line_items = items.map((item) => ({
@@ -33,4 +33,4 @@ export default async function handler(req, res) {
     console.error("Stripe error:", err);
     return res.status(500).json({ error: "Server error" });
   }
-}
+};
