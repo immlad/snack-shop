@@ -1,7 +1,9 @@
-// Replace with your real Stripe publishable key
-const stripe = Stripe("pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q");
+// Stripe key
+const stripe = Stripe("pk_test_XXXXXXXXXXXXXXXXXXXXXXXX");
 
+// Cart state
 const cart = {};
+
 const cartButton = document.getElementById("cartButton");
 const cartDrawer = document.getElementById("cartDrawer");
 const closeCart = document.getElementById("closeCart");
@@ -15,17 +17,13 @@ const bubbleText = document.getElementById("bubbleText");
 
 let bubbleTimeout = null;
 
-function formatPrice(value) {
-  return `$${value.toFixed(2)}`;
-}
-
-function showBubble(message) {
-  bubbleText.textContent = message;
+function showBubble(msg) {
+  bubbleText.textContent = msg;
   bubblePopup.classList.add("show");
   clearTimeout(bubbleTimeout);
   bubbleTimeout = setTimeout(() => {
     bubblePopup.classList.remove("show");
-  }, 1600);
+  }, 1500);
 }
 
 function openCart() {
@@ -38,6 +36,29 @@ function closeCartDrawer() {
   backdrop.classList.remove("show");
 }
 
+// Prevent closing when clicking inside
+cartDrawer.addEventListener("click", (e) => e.stopPropagation());
+
+// Clicking outside closes it
+backdrop.addEventListener("click", closeCartDrawer);
+
+// Add to cart
+document.querySelectorAll(".add-to-cart").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    const card = e.target.closest(".card");
+    const id = card.dataset.id;
+    const name = card.dataset.name;
+    const price = parseFloat(card.dataset.price);
+
+    if (!cart[id]) cart[id] = { id, name, price, qty: 0 };
+    cart[id].qty++;
+
+    updateCartUI();
+    showBubble(`${name} added to cart`);
+  });
+});
+
+// Update UI
 function updateCartUI() {
   cartItemsEl.innerHTML = "";
   let total = 0;
@@ -61,7 +82,7 @@ function updateCartUI() {
         </div>
       </div>
       <div>
-        <div>${formatPrice(lineTotal)}</div>
+        <div>$${lineTotal.toFixed(2)}</div>
         <button data-id="${item.id}" data-action="remove">Remove</button>
       </div>
     `;
@@ -69,55 +90,28 @@ function updateCartUI() {
     cartItemsEl.appendChild(row);
   });
 
-  cartTotalEl.textContent = formatPrice(total);
+  cartTotalEl.textContent = `$${total.toFixed(2)}`;
   cartCountEl.textContent = count;
 }
 
-function addToCartFromCard(cardEl) {
-  const id = cardEl.dataset.id;
-  const name = cardEl.dataset.name;
-  const price = parseFloat(cardEl.dataset.price);
-
-  if (!cart[id]) {
-    cart[id] = { id, name, price, qty: 0 };
-  }
-  cart[id].qty += 1;
-
-  updateCartUI();
-  showBubble(`${name} added to cart`);
-}
-
-// Add to cart
-document.querySelectorAll(".add-to-cart").forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    const card = e.target.closest(".card");
-    addToCartFromCard(card);
-  });
-});
-
-// Open/close cart
-cartButton.addEventListener("click", openCart);
-closeCart.addEventListener("click", closeCartDrawer);
-backdrop.addEventListener("click", closeCartDrawer);
-
-// Cart item actions
+// Fix button actions inside cart
 cartItemsEl.addEventListener("click", (e) => {
-  const action = e.target.dataset.action;
-  const id = e.target.dataset.id;
+  const btn = e.target.closest("button");
+  if (!btn) return;
+
+  const action = btn.dataset.action;
+  const id = btn.dataset.id;
+
   if (!action || !id || !cart[id]) return;
 
-  if (action === "inc") {
-    cart[id].qty += 1;
-  } else if (action === "dec") {
-    cart[id].qty = Math.max(1, cart[id].qty - 1);
-  } else if (action === "remove") {
-    delete cart[id];
-  }
+  if (action === "inc") cart[id].qty++;
+  if (action === "dec") cart[id].qty = Math.max(1, cart[id].qty - 1);
+  if (action === "remove") delete cart[id];
 
   updateCartUI();
 });
 
-// Checkout ONLY on button click (no auto-popup)
+// Checkout
 checkoutButton.addEventListener("click", async () => {
   const items = Object.values(cart).map((item) => ({
     id: item.id,
@@ -129,31 +123,15 @@ checkoutButton.addEventListener("click", async () => {
     return;
   }
 
-  try {
-    const res = await fetch("/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items }),
-    });
+  const res = await fetch("/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items }),
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!data.id) {
-      console.error("No session id returned", data);
-      showBubble("Checkout error");
-      return;
-    }
-
-    const { error } = await stripe.redirectToCheckout({
-      sessionId: data.id,
-    });
-
-    if (error) {
-      console.error(error);
-      showBubble("Stripe error");
-    }
-  } catch (err) {
-    console.error(err);
-    showBubble("Network error");
+  if (data.id) {
+    stripe.redirectToCheckout({ sessionId: data.id });
   }
 });

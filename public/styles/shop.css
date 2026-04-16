@@ -80,14 +80,49 @@ body {
   color: var(--text-soft);
 }
 
-/* Buttons */
-.primary {
-  background: #fff;
-  color: #000;
+/* ============================
+   UNIVERSAL BUTTON FIX
+   ============================ */
+
+button,
+.primary,
+.icon-button,
+.cart-item button {
+  appearance: none;
+  -webkit-appearance: none;
+
   border: none;
-  padding: 10px 16px;
   border-radius: 999px;
+  padding: 10px 16px;
+
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+
+  font-size: 0.9rem;
   cursor: pointer;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition: 0.2s ease;
+}
+
+button:hover,
+.primary:hover,
+.icon-button:hover,
+.cart-item button:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.primary {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: #fff;
 }
 
 /* Bubble popup */
@@ -109,7 +144,10 @@ body {
   transform: translateY(0) scale(1);
 }
 
-/* Centered glass cart */
+/* ============================
+   CENTERED GLASS CART
+   ============================ */
+
 .cart-drawer {
   position: fixed;
   top: 50%;
