@@ -26,8 +26,8 @@
       <!-- HERO -->
       <section class="glass hero">
         <div>
-          <h1>Snacks</h1>
-          <p>Delicious Snacks From Finn's Dih</p>
+          <h1>Floaty, Fresh Snacks</h1>
+          <p>Light, crispy, and ready to pop into your cart.</p>
         </div>
       </section>
 
@@ -79,9 +79,16 @@
             <span>Total</span>
             <span id="cartTotal">$0.00</span>
           </div>
-          <button class="primary full-width" id="checkoutButton">
-            Checkout with Stripe
-          </button>
+
+          <!-- STRIPE ELEMENTS AREA -->
+          <div class="payment-section">
+            <h3>Pay securely</h3>
+            <div id="card-element" class="card-element"></div>
+            <div id="card-errors" class="card-errors"></div>
+            <button class="primary full-width" id="payButton">
+              Pay with card
+            </button>
+          </div>
         </div>
       </aside>
 

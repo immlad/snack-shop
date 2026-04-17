@@ -1,9 +1,13 @@
-// Stripe key
-const stripe = Stripe("pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q");
+// ====== CONFIG ======
+const STRIPE_PUBLISHABLE_KEY = "pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q"; // <-- REPLACE with your real pk_ key
 
-// Cart state
-const cart = {};
+// ====== STATE ======
+let cart = [];
+let stripe;
+let elements;
+let cardElement;
 
+// ====== DOM ELEMENTS ======
 const cartButton = document.getElementById("cartButton");
 const cartDrawer = document.getElementById("cartDrawer");
 const closeCart = document.getElementById("closeCart");
@@ -11,84 +15,63 @@ const backdrop = document.getElementById("backdrop");
 const cartItemsEl = document.getElementById("cartItems");
 const cartTotalEl = document.getElementById("cartTotal");
 const cartCountEl = document.getElementById("cartCount");
-const checkoutButton = document.getElementById("checkoutButton");
 const bubblePopup = document.getElementById("bubblePopup");
 const bubbleText = document.getElementById("bubbleText");
+const payButton = document.getElementById("payButton");
+const cardErrors = document.getElementById("card-errors");
 
-let bubbleTimeout = null;
-
-// Bubble popup
-function showBubble(msg) {
-  bubbleText.textContent = msg;
-  bubblePopup.classList.add("show");
-  clearTimeout(bubbleTimeout);
-  bubbleTimeout = setTimeout(() => {
-    bubblePopup.classList.remove("show");
-  }, 1500);
-}
-
-// Cart open/close
-function openCart() {
-  cartDrawer.classList.add("open");
-  backdrop.classList.add("show");
-}
-
-function closeCartDrawer() {
-  cartDrawer.classList.remove("open");
-  backdrop.classList.remove("show");
-}
-
-// Prevent closing when clicking inside
-cartDrawer.addEventListener("click", (e) => e.stopPropagation());
-
-// Clicking outside closes it
-backdrop.addEventListener("click", closeCartDrawer);
-
-// Add to cart
-document.querySelectorAll(".add-to-cart").forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    const card = e.target.closest(".card");
-    const id = card.dataset.id;
-    const name = card.dataset.name;
-    const price = parseFloat(card.dataset.price);
-
-    if (!cart[id]) cart[id] = { id, name, price, qty: 0 };
-    cart[id].qty++;
-
-    updateCartUI();
-    showBubble(`${name} added to cart`);
+// ====== INIT STRIPE ELEMENTS ======
+function initStripe() {
+  stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+  elements = stripe.elements();
+  cardElement = elements.create("card", {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#333",
+        "::placeholder": { color: "#999" },
+      },
+    },
   });
-});
+  cardElement.mount("#card-element");
+}
 
-// Update UI
-function updateCartUI() {
+// ====== CART LOGIC ======
+function addToCart(id, name, price) {
+  const existing = cart.find((item) => item.id === id);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ id, name, price, quantity: 1 });
+  }
+  renderCart();
+  showBubble(`${name} added to cart`);
+}
+
+function renderCart() {
   cartItemsEl.innerHTML = "";
+
   let total = 0;
   let count = 0;
 
-  Object.values(cart).forEach((item) => {
-    const lineTotal = item.price * item.qty;
-    total += lineTotal;
-    count += item.qty;
+  cart.forEach((item) => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    count += item.quantity;
 
     const row = document.createElement("div");
-    row.className = "cart-item";
-
+    row.className = "cart-item-row";
     row.innerHTML = `
       <div class="cart-item-main">
-        <span>${item.name}</span>
-        <div class="cart-item-qty">
-          <button data-id="${item.id}" data-action="dec">−</button>
-          <span>${item.qty}</span>
-          <button data-id="${item.id}" data-action="inc">+</button>
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">
+          $${item.price.toFixed(2)} × ${item.quantity}
         </div>
       </div>
-      <div>
-        <div>$${lineTotal.toFixed(2)}</div>
-        <button data-id="${item.id}" data-action="remove">Remove</button>
+      <div class="cart-item-total">
+        $${itemTotal.toFixed(2)}
       </div>
     `;
-
     cartItemsEl.appendChild(row);
   });
 
@@ -96,47 +79,101 @@ function updateCartUI() {
   cartCountEl.textContent = count;
 }
 
-// Fix button actions inside cart
-cartItemsEl.addEventListener("click", (e) => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
+function showBubble(message) {
+  bubbleText.textContent = message;
+  bubblePopup.classList.add("show");
+  setTimeout(() => {
+    bubblePopup.classList.remove("show");
+  }, 1200);
+}
 
-  const action = btn.dataset.action;
-  const id = btn.dataset.id;
-
-  if (!action || !id || !cart[id]) return;
-
-  if (action === "inc") cart[id].qty++;
-  if (action === "dec") cart[id].qty = Math.max(1, cart[id].qty - 1);
-  if (action === "remove") delete cart[id];
-
-  updateCartUI();
+// ====== SIDE CART OPEN/CLOSE ======
+cartButton.addEventListener("click", () => {
+  cartDrawer.classList.add("open");
+  backdrop.style.display = "block";
 });
 
-// Checkout
-checkoutButton.addEventListener("click", async () => {
-  const items = Object.values(cart).map((item) => ({
-    id: item.id,
-    quantity: item.qty,
-  }));
+closeCart.addEventListener("click", () => {
+  cartDrawer.classList.remove("open");
+  backdrop.style.display = "none";
+});
 
-  if (!items.length) {
-    showBubble("Your cart is empty");
+backdrop.addEventListener("click", () => {
+  cartDrawer.classList.remove("open");
+  backdrop.style.display = "none";
+});
+
+// ====== ADD-TO-CART BUTTONS ======
+document.querySelectorAll(".card").forEach((card) => {
+  const id = card.getAttribute("data-id");
+  const name = card.getAttribute("data-name");
+  const price = parseFloat(card.getAttribute("data-price"));
+
+  const button = card.querySelector(".add-to-cart");
+  button.addEventListener("click", () => {
+    addToCart(id, name, price);
+  });
+});
+
+// ====== STRIPE PAYMENT FLOW (ELEMENTS) ======
+payButton.addEventListener("click", async () => {
+  cardErrors.textContent = "";
+
+  if (!cart.length) {
+    cardErrors.textContent = "Your cart is empty.";
     return;
   }
 
-  const res = await fetch("/api/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items }),
-  });
+  payButton.disabled = true;
+  payButton.textContent = "Processing...";
 
-  const data = await res.json();
+  try {
+    // Call backend to create PaymentIntent
+    const res = await fetch("/api/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: cart }),
+    });
 
-  if (data.id) {
-    stripe.redirectToCheckout({ sessionId: data.id });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Payment failed");
+    }
+
+    const clientSecret = data.clientSecret;
+
+    const result = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardElement,
+      },
+    });
+
+    if (result.error) {
+      cardErrors.textContent = result.error.message || "Payment failed.";
+      payButton.disabled = false;
+      payButton.textContent = "Pay with card";
+      return;
+    }
+
+    if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+      // Clear cart
+      cart = [];
+      renderCart();
+      cardErrors.textContent = "Payment successful! 🎉";
+      payButton.textContent = "Paid";
+      payButton.disabled = true;
+    }
+  } catch (err) {
+    console.error(err);
+    cardErrors.textContent = err.message || "Something went wrong.";
+    payButton.disabled = false;
+    payButton.textContent = "Pay with card";
   }
 });
 
-// Cart button opens drawer
-cartButton.addEventListener("click", openCart);
+// ====== ON LOAD ======
+document.addEventListener("DOMContentLoaded", () => {
+  initStripe();
+  renderCart();
+});

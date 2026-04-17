@@ -253,3 +253,102 @@ button:hover,
   opacity: 1;
   pointer-events: auto;
 }
+/* SIDE CART DRAWER */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 360px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+  transition: right 0.35s ease;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+/* OPEN STATE */
+.cart-drawer.open {
+  right: 0;
+}
+
+/* CART HEADER */
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* CLOSE BUTTON */
+.cart-header .icon-button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+  transition: opacity 0.2s;
+}
+
+.cart-header .icon-button:hover {
+  opacity: 0.6;
+}
+
+/* BACKDROP */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  display: none;
+  z-index: 9990;
+}
+
+/* CART ITEMS */
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+/* CART FOOTER */
+.cart-footer {
+  border-top: 1px solid rgba(255,255,255,0.4);
+  padding-top: 12px;
+}
+
+/* TOTAL ROW */
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* PAYMENT SECTION */
+.payment-section {
+  margin-top: 8px;
+}
+
+/* STRIPE CARD ELEMENT */
+.card-element {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.8);
+  margin-bottom: 8px;
+}
+
+.card-errors {
+  color: #d32f2f;
+  font-size: 13px;
+  min-height: 18px;
+}
+
+/* PRIMARY BUTTON */
+.primary.full-width {
+  width: 100%;
+}
