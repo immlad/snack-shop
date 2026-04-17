@@ -9,6 +9,8 @@
 </head>
 <body>
   <div class="app-shell">
+
+    <!-- HEADER -->
     <header class="glass header">
       <div class="brand">
         <span class="brand-dot"></span>
@@ -20,67 +22,73 @@
     </header>
 
     <main class="content">
+
+      <!-- HERO -->
       <section class="glass hero">
         <div>
-          <h1>Floaty, Fresh Snacks</h1>
-          <p>Light, crispy, and ready to pop into your cart.</p>
+          <h1>Snacks</h1>
+          <p>Delicious Snacks From Finn's Dih</p>
         </div>
       </section>
 
-      <section class="grid" id="productGrid">
-        <article class="glass card" data-id="chips" data-name="Cloud Chips" data-price="3.5">
-          <h2>Cloud Chips</h2>
-          <p>Feather-light potato crisps with sea salt.</p>
-          <div class="card-footer">
-            <span class="price">$3.50</span>
-            <button class="primary add-to-cart">Add</button>
-          </div>
-        </article>
+      <!-- SNACK GRID -->
+      <div class="grid">
 
-        <article class="glass card" data-id="gummies" data-name="Sky Gummies" data-price="4.25">
-          <h2>Sky Gummies</h2>
-          <p>Soft fruit gummies that melt in your mouth.</p>
-          <div class="card-footer">
-            <span class="price">$4.25</span>
-            <button class="primary add-to-cart">Add</button>
-          </div>
-        </article>
+        <!-- MINI TAKIS -->
+        <div class="card" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
+          <h3>Mini Takis</h3>
+          <p>Small but mighty — spicy rolled tortilla chips.</p>
+          <strong>$1.00</strong>
+          <button class="primary add-to-cart">Add</button>
+        </div>
 
-        <article class="glass card" data-id="cookies" data-name="Nimbus Cookies" data-price="5.0">
-          <h2>Nimbus Cookies</h2>
-          <p>Chewy vanilla cookies with white chocolate.</p>
-          <div class="card-footer">
-            <span class="price">$5.00</span>
-            <button class="primary add-to-cart">Add</button>
+        <!-- ARIZONA TEA -->
+        <div class="card" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
+          <h3>Arizona Tea</h3>
+          <p>Refreshing iced tea with classic Arizona flavor.</p>
+          <strong>$2.00</strong>
+          <button class="primary add-to-cart">Add</button>
+        </div>
+
+        <!-- NEEDOH -->
+        <div class="card" data-id="needoh" data-name="Needoh" data-price="10.00">
+          <h3>Needoh</h3>
+          <p>Squishy, satisfying stress ball fun.</p>
+          <strong>$10.00</strong>
+          <button class="primary add-to-cart">Add</button>
+        </div>
+
+      </div>
+
+      <!-- BUBBLE POPUP -->
+      <div class="bubble-popup" id="bubblePopup">
+        <span id="bubbleText">Added to cart</span>
+      </div>
+
+      <!-- CART DRAWER -->
+      <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+          <h2>Your Cart</h2>
+          <button class="icon-button" id="closeCart">✕</button>
+        </div>
+
+        <div class="cart-items" id="cartItems"></div>
+
+        <div class="cart-footer">
+          <div class="cart-total-row">
+            <span>Total</span>
+            <span id="cartTotal">$0.00</span>
           </div>
-        </article>
-      </section>
+          <button class="primary full-width" id="checkoutButton">
+            Checkout with Stripe
+          </button>
+        </div>
+      </aside>
+
+      <div class="backdrop" id="backdrop"></div>
+
+      <script src="js/shop.js"></script>
     </main>
   </div>
-
-  <!-- Bubble popup -->
-  <div class="bubble-popup" id="bubblePopup">
-    <span id="bubbleText">Added to cart</span>
-  </div>
-
-  <!-- Cart drawer -->
-  <aside class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h2>Your Cart</h2>
-      <button class="icon-button" id="closeCart">✕</button>
-    </div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer">
-      <div class="cart-total-row">
-        <span>Total</span>
-        <span id="cartTotal">$0.00</span>
-      </div>
-      <button class="primary full-width" id="checkoutButton">Checkout with Stripe</button>
-    </div>
-  </aside>
-
-  <div class="backdrop" id="backdrop"></div>
-
-  <script src="js/shop.js"></script>
 </body>
 </html>
