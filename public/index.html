@@ -34,7 +34,6 @@
       <!-- SNACK GRID -->
       <div class="grid">
 
-        <!-- MINI TAKIS -->
         <div class="card" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
           <h3>Mini Takis</h3>
           <p>Small but mighty — spicy rolled tortilla chips.</p>
@@ -42,7 +41,6 @@
           <button class="primary add-to-cart">Add</button>
         </div>
 
-        <!-- ARIZONA TEA -->
         <div class="card" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
           <h3>Arizona Tea</h3>
           <p>Refreshing iced tea with classic Arizona flavor.</p>
@@ -50,7 +48,6 @@
           <button class="primary add-to-cart">Add</button>
         </div>
 
-        <!-- NEEDOH -->
         <div class="card" data-id="needoh" data-name="Needoh" data-price="10.00">
           <h3>Needoh</h3>
           <p>Squishy, satisfying stress ball fun.</p>
@@ -65,11 +62,14 @@
         <span id="bubbleText">Added to cart</span>
       </div>
 
-      <!-- CART DRAWER -->
+      <!-- SIDE CART DRAWER -->
       <aside class="cart-drawer" id="cartDrawer">
+
+        <!-- X BUTTON -->
+        <button class="drawer-close" id="drawerClose">✕</button>
+
         <div class="cart-header">
           <h2>Your Cart</h2>
-          <button class="icon-button" id="closeCart">✕</button>
         </div>
 
         <div class="cart-items" id="cartItems"></div>
@@ -80,14 +80,12 @@
             <span id="cartTotal">$0.00</span>
           </div>
 
-          <!-- STRIPE ELEMENTS AREA -->
-          <div class="payment-section">
+          <!-- STRIPE ELEMENTS -->
+          <div class="payment-section" id="paymentSection">
             <h3>Pay securely</h3>
             <div id="card-element" class="card-element"></div>
             <div id="card-errors" class="card-errors"></div>
-            <button class="primary full-width" id="payButton">
-              Pay with card
-            </button>
+            <button class="primary full-width" id="payButton">Pay with card</button>
           </div>
         </div>
       </aside>
