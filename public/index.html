@@ -9,9 +9,7 @@
 </head>
 <body>
   <div class="app-shell">
-
-    <!-- HEADER -->
-    <header class="glass header">
+    <header class="header glass">
       <div class="brand">
         <span class="brand-dot"></span>
         <span class="brand-text">SnackCloud</span>
@@ -22,50 +20,53 @@
     </header>
 
     <main class="content">
-
-      <!-- HERO -->
-      <section class="glass hero">
-        <div>
+      <section class="hero glass">
+        <div class="hero-inner">
           <h1>Floaty, Fresh Snacks</h1>
           <p>Light, crispy, and ready to pop into your cart.</p>
         </div>
       </section>
 
-      <!-- SNACK GRID -->
-      <div class="grid">
+      <section class="grid">
+        <article class="card capsule glass" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
+          <div class="card-body">
+            <h3>Mini Takis</h3>
+            <p>Small but mighty — spicy rolled tortilla chips.</p>
+          </div>
+          <div class="card-footer">
+            <strong>$1.00</strong>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
 
-        <div class="card" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
-          <h3>Mini Takis</h3>
-          <p>Small but mighty — spicy rolled tortilla chips.</p>
-          <strong>$1.00</strong>
-          <button class="primary add-to-cart">Add</button>
-        </div>
+        <article class="card capsule glass" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
+          <div class="card-body">
+            <h3>Arizona Tea</h3>
+            <p>Refreshing iced tea with classic Arizona flavor.</p>
+          </div>
+          <div class="card-footer">
+            <strong>$2.00</strong>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
 
-        <div class="card" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
-          <h3>Arizona Tea</h3>
-          <p>Refreshing iced tea with classic Arizona flavor.</p>
-          <strong>$2.00</strong>
-          <button class="primary add-to-cart">Add</button>
-        </div>
+        <article class="card capsule glass" data-id="needoh" data-name="Needoh" data-price="10.00">
+          <div class="card-body">
+            <h3>Needoh</h3>
+            <p>Squishy, satisfying stress ball fun.</p>
+          </div>
+          <div class="card-footer">
+            <strong>$10.00</strong>
+            <button class="primary add-to-cart">Add</button>
+          </div>
+        </article>
+      </section>
 
-        <div class="card" data-id="needoh" data-name="Needoh" data-price="10.00">
-          <h3>Needoh</h3>
-          <p>Squishy, satisfying stress ball fun.</p>
-          <strong>$10.00</strong>
-          <button class="primary add-to-cart">Add</button>
-        </div>
-
-      </div>
-
-      <!-- BUBBLE POPUP -->
       <div class="bubble-popup" id="bubblePopup">
         <span id="bubbleText">Added to cart</span>
       </div>
 
-      <!-- SIDE CART DRAWER -->
-      <aside class="cart-drawer" id="cartDrawer">
-
-        <!-- X BUTTON -->
+      <aside class="cart-drawer glass" id="cartDrawer">
         <button class="drawer-close" id="drawerClose">✕</button>
 
         <div class="cart-header">
@@ -80,8 +81,7 @@
             <span id="cartTotal">$0.00</span>
           </div>
 
-          <!-- STRIPE ELEMENTS -->
-          <div class="payment-section" id="paymentSection">
+          <div class="payment-section">
             <h3>Pay securely</h3>
             <div id="card-element" class="card-element"></div>
             <div id="card-errors" class="card-errors"></div>
@@ -91,9 +91,9 @@
       </aside>
 
       <div class="backdrop" id="backdrop"></div>
-
-      <script src="js/shop.js"></script>
     </main>
   </div>
+
+  <script src="js/shop.js"></script>
 </body>
 </html>

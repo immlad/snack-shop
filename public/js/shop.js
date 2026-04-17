@@ -1,13 +1,12 @@
-// ====== STRIPE CONFIG ======
-const STRIPE_PUBLISHABLE_KEY = "pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q";
+// Stripe publishable key (real)
+const STRIPE_PUBLISHABLE_KEY =
+  "pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q";
 
-// ====== STATE ======
 let cart = [];
 let stripe;
 let elements;
 let cardElement;
 
-// ====== DOM ======
 const cartButton = document.getElementById("cartButton");
 const cartDrawer = document.getElementById("cartDrawer");
 const drawerClose = document.getElementById("drawerClose");
@@ -15,23 +14,35 @@ const backdrop = document.getElementById("backdrop");
 const cartItemsEl = document.getElementById("cartItems");
 const cartTotalEl = document.getElementById("cartTotal");
 const cartCountEl = document.getElementById("cartCount");
+const bubblePopup = document.getElementById("bubblePopup");
+const bubbleText = document.getElementById("bubbleText");
 const payButton = document.getElementById("payButton");
 const cardErrors = document.getElementById("card-errors");
 
-// ====== INIT STRIPE ======
 function initStripe() {
   stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
   elements = stripe.elements();
-  cardElement = elements.create("card");
+  cardElement = elements.create("card", {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#111827",
+        "::placeholder": { color: "#9ca3af" },
+      },
+    },
+  });
   cardElement.mount("#card-element");
 }
 
-// ====== CART ======
 function addToCart(id, name, price) {
-  const existing = cart.find((i) => i.id === id);
-  if (existing) existing.quantity++;
-  else cart.push({ id, name, price, quantity: 1 });
+  const existing = cart.find((item) => item.id === id);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ id, name, price, quantity: 1 });
+  }
   renderCart();
+  showBubble(`${name} added to cart`);
 }
 
 function renderCart() {
@@ -40,21 +51,34 @@ function renderCart() {
   let count = 0;
 
   cart.forEach((item) => {
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
+    count += item.quantity;
+
     const row = document.createElement("div");
+    row.className = "cart-item-row";
     row.innerHTML = `
-      <div>${item.name} — $${item.price} × ${item.quantity}</div>
+      <div>
+        <div>${item.name}</div>
+        <div class="cart-item-meta">$${item.price.toFixed(2)} × ${item.quantity}</div>
+      </div>
+      <div>$${itemTotal.toFixed(2)}</div>
     `;
     cartItemsEl.appendChild(row);
-
-    total += item.price * item.quantity;
-    count += item.quantity;
   });
 
   cartTotalEl.textContent = `$${total.toFixed(2)}`;
   cartCountEl.textContent = count;
 }
 
-// ====== OPEN/CLOSE DRAWER ======
+function showBubble(message) {
+  bubbleText.textContent = message;
+  bubblePopup.classList.add("show");
+  setTimeout(() => {
+    bubblePopup.classList.remove("show");
+  }, 1200);
+}
+
 cartButton.addEventListener("click", () => {
   cartDrawer.classList.add("open");
   backdrop.style.display = "block";
@@ -70,18 +94,15 @@ backdrop.addEventListener("click", () => {
   backdrop.style.display = "none";
 });
 
-// ====== ADD TO CART BUTTONS ======
 document.querySelectorAll(".card").forEach((card) => {
   const id = card.dataset.id;
   const name = card.dataset.name;
   const price = parseFloat(card.dataset.price);
 
-  card.querySelector(".add-to-cart").addEventListener("click", () => {
-    addToCart(id, name, price);
-  });
+  const button = card.querySelector(".add-to-cart");
+  button.addEventListener("click", () => addToCart(id, name, price));
 });
 
-// ====== PAYMENT ======
 payButton.addEventListener("click", async () => {
   cardErrors.textContent = "";
 
@@ -93,30 +114,43 @@ payButton.addEventListener("click", async () => {
   payButton.disabled = true;
   payButton.textContent = "Processing...";
 
-  const res = await fetch("/api/create-payment-intent", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ items: cart }),
-  });
+  try {
+    const res = await fetch("/api/create-payment-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: cart }),
+    });
 
-  const data = await res.json();
-  const clientSecret = data.clientSecret;
+    const data = await res.json();
+    if (!res.ok || !data.clientSecret) {
+      throw new Error(data.error || "Unable to start payment.");
+    }
 
-  const result = await stripe.confirmCardPayment(clientSecret, {
-    payment_method: { card: cardElement },
-  });
+    const result = await stripe.confirmCardPayment(data.clientSecret, {
+      payment_method: { card: cardElement },
+    });
 
-  if (result.error) {
-    cardErrors.textContent = result.error.message;
+    if (result.error) {
+      cardErrors.textContent = result.error.message || "Payment failed.";
+      payButton.disabled = false;
+      payButton.textContent = "Pay with card";
+      return;
+    }
+
+    if (result.paymentIntent && result.paymentIntent.status === "succeeded") {
+      cardErrors.textContent = "Payment successful!";
+      cart = [];
+      renderCart();
+      payButton.textContent = "Paid";
+      payButton.disabled = true;
+    }
+  } catch (err) {
+    cardErrors.textContent = err.message || "Something went wrong.";
     payButton.disabled = false;
     payButton.textContent = "Pay with card";
-    return;
   }
-
-  payButton.textContent = "Paid!";
 });
 
-// ====== INIT ======
 document.addEventListener("DOMContentLoaded", () => {
   initStripe();
   renderCart();

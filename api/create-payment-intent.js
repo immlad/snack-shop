@@ -6,19 +6,32 @@ module.exports = async (req, res) => {
   }
 
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error("Missing STRIPE_SECRET_KEY env var");
+      return res.status(500).json({ error: "Server misconfigured" });
+    }
+
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
     const items = req.body.items || [];
 
     const PRICE_MAP = {
-      "mini-takis": 100,
-      arizona: 200,
-      needoh: 1000,
+      "mini-takis": 100, // $1.00
+      arizona: 200,      // $2.00
+      needoh: 1000,      // $10.00
     };
 
     let amount = 0;
     items.forEach((item) => {
-      amount += PRICE_MAP[item.id] * item.quantity;
+      const unit = PRICE_MAP[item.id];
+      if (!unit) {
+        throw new Error(`No price mapping for item id: ${item.id}`);
+      }
+      amount += unit * item.quantity;
     });
+
+    if (amount <= 0) {
+      return res.status(400).json({ error: "Cart is empty or invalid." });
+    }
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
@@ -26,9 +39,9 @@ module.exports = async (req, res) => {
       automatic_payment_methods: { enabled: true },
     });
 
-    res.json({ clientSecret: paymentIntent.client_secret });
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
-    console.error(err);
+    console.error("Stripe error in create-payment-intent:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
