@@ -1,12 +1,20 @@
-// Stripe publishable key (real)
+// Stripe publishable key
 const STRIPE_PUBLISHABLE_KEY =
   "pk_test_51TKoZeRnU7ZNOlrMW7uwp2xMnmnY6jlLvbkfMHe2SjmrlA7fv8bSPWCwewsrvOKWJOIgWLcEl9CdcAhfJ4MaEh3l00uFsqyZ0Q";
 
+// State
 let cart = [];
+let stock = {
+  "mini-takis": 10,
+  arizona: 10,
+  needoh: 10,
+};
+
 let stripe;
 let elements;
 let cardElement;
 
+// DOM
 const cartButton = document.getElementById("cartButton");
 const cartDrawer = document.getElementById("cartDrawer");
 const drawerClose = document.getElementById("drawerClose");
@@ -18,7 +26,10 @@ const bubblePopup = document.getElementById("bubblePopup");
 const bubbleText = document.getElementById("bubbleText");
 const payButton = document.getElementById("payButton");
 const cardErrors = document.getElementById("card-errors");
+const adminPanel = document.getElementById("adminPanel");
+const adminToggle = document.getElementById("adminToggle");
 
+// Stripe init
 function initStripe() {
   stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
   elements = stripe.elements();
@@ -34,7 +45,13 @@ function initStripe() {
   cardElement.mount("#card-element");
 }
 
+// Cart
 function addToCart(id, name, price) {
+  if (stock[id] <= 0) {
+    showBubble(`${name} is out of stock`);
+    return;
+  }
+
   const existing = cart.find((item) => item.id === id);
   if (existing) {
     existing.quantity += 1;
@@ -71,6 +88,7 @@ function renderCart() {
   cartCountEl.textContent = count;
 }
 
+// Bubble
 function showBubble(message) {
   bubbleText.textContent = message;
   bubblePopup.classList.add("show");
@@ -79,6 +97,7 @@ function showBubble(message) {
   }, 1200);
 }
 
+// Drawer
 cartButton.addEventListener("click", () => {
   cartDrawer.classList.add("open");
   backdrop.style.display = "block";
@@ -94,15 +113,63 @@ backdrop.addEventListener("click", () => {
   backdrop.style.display = "none";
 });
 
-document.querySelectorAll(".card").forEach((card) => {
+// Products
+document.querySelectorAll(".product-card").forEach((card) => {
   const id = card.dataset.id;
   const name = card.dataset.name;
   const price = parseFloat(card.dataset.price);
-
   const button = card.querySelector(".add-to-cart");
+
   button.addEventListener("click", () => addToCart(id, name, price));
 });
 
+// Stock UI
+function updateStockUI() {
+  document.querySelectorAll(".product-card").forEach((card) => {
+    const id = card.dataset.id;
+    const label = card.querySelector("[data-stock-label]");
+    const button = card.querySelector(".add-to-cart");
+    const qty = stock[id] ?? 0;
+
+    if (qty > 0) {
+      label.textContent = `In stock: ${qty}`;
+      button.disabled = false;
+    } else {
+      label.textContent = "Out of stock";
+      button.disabled = true;
+    }
+  });
+
+  // Sync admin inputs
+  const miniInput = document.getElementById("stock-mini-takis");
+  const ariInput = document.getElementById("stock-arizona");
+  const needohInput = document.getElementById("stock-needoh");
+  if (miniInput) miniInput.value = stock["mini-takis"];
+  if (ariInput) ariInput.value = stock["arizona"];
+  if (needohInput) needohInput.value = stock["needoh"];
+}
+
+// Admin panel
+adminToggle.addEventListener("click", () => {
+  const isHidden = adminPanel.style.display === "none" || !adminPanel.style.display;
+  adminPanel.style.display = isHidden ? "block" : "none";
+});
+
+document.querySelectorAll("[data-update-stock]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const row = btn.closest(".admin-row");
+    const id = row.dataset.id;
+    const input = row.querySelector(".admin-input");
+    const value = parseInt(input.value, 10);
+
+    if (!Number.isNaN(value) && value >= 0) {
+      stock[id] = value;
+      updateStockUI();
+    }
+  });
+});
+
+// Payment
 payButton.addEventListener("click", async () => {
   cardErrors.textContent = "";
 
@@ -151,7 +218,10 @@ payButton.addEventListener("click", async () => {
   }
 });
 
+// Init
 document.addEventListener("DOMContentLoaded", () => {
   initStripe();
+  updateStockUI();
   renderCart();
+  adminPanel.style.display = "none";
 });

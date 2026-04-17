@@ -8,84 +8,138 @@
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="header glass">
-      <div class="brand">
-        <span class="brand-dot"></span>
-        <span class="brand-text">SnackCloud</span>
+  <div class="page">
+    <header class="header">
+      <div class="header-inner">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <span class="brand-name">SnackCloud</span>
+        </div>
+        <div class="header-actions">
+          <button class="admin-toggle" id="adminToggle">Admin</button>
+          <button class="cart-button" id="cartButton">
+            🛒 <span id="cartCount">0</span>
+          </button>
+        </div>
       </div>
-      <button class="cart-button" id="cartButton">
-        🛒 <span id="cartCount">0</span>
-      </button>
     </header>
 
-    <main class="content">
-      <section class="hero glass">
-        <div class="hero-inner">
-          <h1>Floaty, Fresh Snacks</h1>
-          <p>Light, crispy, and ready to pop into your cart.</p>
+    <main class="main">
+      <section class="hero">
+        <h1 class="hero-title">Floaty, Fresh Snacks</h1>
+        <p className="hero-subtitle">
+          Light, crispy, and ready to pop into your cart.
+        </p>
+      </section>
+
+      <section class="collection">
+        <div class="collection-grid">
+          <!-- Mini Takis -->
+          <article class="product-card" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
+            <a class="product-media">
+              <img
+                src="https://i5.walmartimages.com/asr/648c53d9-0cdf-4ba1-9379-4033c8dd37aa.3737717fec2ca32ae548434aa9e730dc.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF"
+                alt="Mini Takis"
+              />
+            </a>
+            <div class="product-info">
+              <h2 class="product-title">Mini Takis</h2>
+              <p class="product-desc">Small but mighty — spicy rolled tortilla chips.</p>
+              <div class="product-meta">
+                <span class="product-price">$1.00</span>
+                <span class="product-stock" data-stock-label>In stock</span>
+              </div>
+              <button class="product-button add-to-cart">Add to cart</button>
+            </div>
+          </article>
+
+          <!-- Arizona Tea -->
+          <article class="product-card" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
+            <a class="product-media">
+              <img
+                src="https://www.instacart.com/assets/domains/product-image/file/large_05aa4eaf-f33f-4e05-a1ec-6f20184fce93.png"
+                alt="Arizona Tea"
+              />
+            </a>
+            <div class="product-info">
+              <h2 class="product-title">Arizona Tea</h2>
+              <p class="product-desc">Refreshing iced tea with classic Arizona flavor.</p>
+              <div class="product-meta">
+                <span class="product-price">$2.00</span>
+                <span class="product-stock" data-stock-label>In stock</span>
+              </div>
+              <button class="product-button add-to-cart">Add to cart</button>
+            </div>
+          </article>
+
+          <!-- Needoh -->
+          <article class="product-card" data-id="needoh" data-name="Needoh" data-price="10.00">
+            <a class="product-media">
+              <img
+                src="https://shopcmss.com/cdn/shop/files/NCBND-NeeDoh-Nice-Cube-3QR-Purple-web.jpg?v=1730323586"
+                alt="Needoh"
+              />
+            </a>
+            <div class="product-info">
+              <h2 class="product-title">Needoh</h2>
+              <p class="product-desc">Squishy, satisfying stress ball fun.</p>
+              <div class="product-meta">
+                <span class="product-price">$10.00</span>
+                <span class="product-stock" data-stock-label>In stock</span>
+              </div>
+              <button class="product-button add-to-cart">Add to cart</button>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section class="grid">
-        <article class="card capsule glass" data-id="mini-takis" data-name="Mini Takis" data-price="1.00">
-          <div class="card-body">
-            <h3>Mini Takis</h3>
-            <p>Small but mighty — spicy rolled tortilla chips.</p>
+      <!-- Admin panel -->
+      <section class="admin-panel" id="adminPanel">
+        <div class="admin-inner">
+          <h2>Admin Panel</h2>
+          <p>Adjust live stock levels for each product.</p>
+          <div class="admin-rows">
+            <div class="admin-row" data-id="mini-takis">
+              <span class="admin-label">Mini Takis</span>
+              <input type="number" min="0" class="admin-input" id="stock-mini-takis" />
+              <button class="admin-button" data-update-stock>Update</button>
+            </div>
+            <div class="admin-row" data-id="arizona">
+              <span class="admin-label">Arizona Tea</span>
+              <input type="number" min="0" class="admin-input" id="stock-arizona" />
+              <button class="admin-button" data-update-stock>Update</button>
+            </div>
+            <div class="admin-row" data-id="needoh">
+              <span class="admin-label">Needoh</span>
+              <input type="number" min="0" class="admin-input" id="stock-needoh" />
+              <button class="admin-button" data-update-stock>Update</button>
+            </div>
           </div>
-          <div class="card-footer">
-            <strong>$1.00</strong>
-            <button class="primary add-to-cart">Add</button>
-          </div>
-        </article>
-
-        <article class="card capsule glass" data-id="arizona" data-name="Arizona Tea" data-price="2.00">
-          <div class="card-body">
-            <h3>Arizona Tea</h3>
-            <p>Refreshing iced tea with classic Arizona flavor.</p>
-          </div>
-          <div class="card-footer">
-            <strong>$2.00</strong>
-            <button class="primary add-to-cart">Add</button>
-          </div>
-        </article>
-
-        <article class="card capsule glass" data-id="needoh" data-name="Needoh" data-price="10.00">
-          <div class="card-body">
-            <h3>Needoh</h3>
-            <p>Squishy, satisfying stress ball fun.</p>
-          </div>
-          <div class="card-footer">
-            <strong>$10.00</strong>
-            <button class="primary add-to-cart">Add</button>
-          </div>
-        </article>
+        </div>
       </section>
 
+      <!-- Bubble popup -->
       <div class="bubble-popup" id="bubblePopup">
         <span id="bubbleText">Added to cart</span>
       </div>
 
-      <aside class="cart-drawer glass" id="cartDrawer">
+      <!-- Cart drawer -->
+      <aside class="cart-drawer" id="cartDrawer">
         <button class="drawer-close" id="drawerClose">✕</button>
-
         <div class="cart-header">
           <h2>Your Cart</h2>
         </div>
-
         <div class="cart-items" id="cartItems"></div>
-
         <div class="cart-footer">
           <div class="cart-total-row">
             <span>Total</span>
             <span id="cartTotal">$0.00</span>
           </div>
-
           <div class="payment-section">
             <h3>Pay securely</h3>
             <div id="card-element" class="card-element"></div>
             <div id="card-errors" class="card-errors"></div>
-            <button class="primary full-width" id="payButton">Pay with card</button>
+            <button class="product-button full-width" id="payButton">Pay with card</button>
           </div>
         </div>
       </aside>
